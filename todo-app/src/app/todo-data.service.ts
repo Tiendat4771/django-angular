@@ -1,21 +1,20 @@
-import { Injectable } from '@angular/core';
-import {Todo} from './todo';
+import { Injectable } from "@angular/core";
+import { Todo } from "./todo";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class TodoDataService {
-
   // automatic inscrementing of ids
   lastId: number = 0;
 
   // Placehoder for todos
   todos: Todo[] = [];
-  constructor() { }
-
+  constructor() {}
 
   // Add Todo
   addTodo(todo: Todo): TodoDataService {
+    console.log("todo", todo);
     if (!todo.id) {
       todo.id = ++this.lastId;
     }
@@ -25,8 +24,7 @@ export class TodoDataService {
 
   // Simulate DELETE /todos/:id
   deleteTodoById(id: number): TodoDataService {
-    this.todos = this.todos
-      .filter(todo => todo.id !== id);
+    this.todos = this.todos.filter(todo => todo.id !== id);
     return this;
   }
 
@@ -47,9 +45,7 @@ export class TodoDataService {
 
   // Simulate GET /todos/:id
   getTodoById(id: number): Todo {
-    return this.todos
-      .filter(todo => todo.id === id)
-      .pop();
+    return this.todos.filter(todo => todo.id === id).pop();
   }
 
   // Toggle todo complete

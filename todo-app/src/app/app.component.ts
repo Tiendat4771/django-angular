@@ -1,15 +1,14 @@
-import { Component } from '@angular/core';
-import {Todo} from './todo';
-import {TodoDataService} from './todo-data.service';
+import { Component } from "@angular/core";
+import { Todo } from "./todo";
+import { TodoDataService } from "./todo-data.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.scss"],
   providers: [TodoDataService]
 })
 export class AppComponent {
-
   newTodo: Todo = new Todo();
   // Ask Angular DI system to inject the dependency
   // associated with the dependency injection token `TodoDataService`
