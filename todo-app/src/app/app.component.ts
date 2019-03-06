@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Todo } from "./todo";
 import { TodoDataService } from "./todo-data.service";
 
@@ -8,8 +8,9 @@ import { TodoDataService } from "./todo-data.service";
   styleUrls: ["./app.component.scss"],
   providers: [TodoDataService]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   newTodo: Todo = new Todo();
+  todos: Todo[] = [];
   // Ask Angular DI system to inject the dependency
   // associated with the dependency injection token `TodoDataService`
   // and assign it to a property called `todoDataService`
@@ -17,21 +18,44 @@ export class AppComponent {
     this.todoDataService = todoDataService;
   }
 
+  ngOnInit() {
+    this.todoDataService.getAllTodos().subscribe(
+      todos => {
+        this.todos = todos;
+      },
+      err => console.log("get all todos fails", err)
+    );
+  }
   // Service is now available as this.todoDataService
   addTodo() {
-    this.todoDataService.addTodo(this.newTodo);
-    this.newTodo = new Todo();
+    this.todoDataService.addTodo(this.newTodo).subscribe(
+      (todo: Todo) => {
+        this.todos.push(todo);
+      },
+      err => console.log("add new todo fails", err),
+    );
   }
 
-  toggleTodoComplete(todo) {
-    this.todoDataService.toggleTodoComplete(todo);
+  toggleTodoComplete(todo: Todo) {
+    todo.completed = !todo.completed;
+    this.todoDataService.toggleTodoComplete(todo).subscribe(
+      (res: Todo) => {
+        this.todos = this.todos.map(item => {
+          if (item.id === res.id) {
+            item.completed = res.completed;
+          }
+          return item;
+        });
+      }
+    );
   }
 
-  removeTodo(todo) {
-    this.todoDataService.deleteTodoById(todo.id);
-  }
-
-  get todos() {
-    return this.todoDataService.getAllTodos();
+  removeTodo(todo: Todo) {
+    this.todoDataService.deleteTodoById(todo.id).subscribe(
+      (res: Response) => {
+        this.todos = this.todos.filter(item => item.id !== todo.id);
+      },
+      err => console.log("delete todo fails", err)
+    );
   }
 }
